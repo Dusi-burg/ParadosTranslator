@@ -20,7 +20,7 @@ namespace ParadosLib
             Map(m => m.Section).Name("Section(files)");
             Map(m => m.Key).Name("Key");
             Map(m => m.OriginalText).Name($"OriginalText({originalLanguage})");
-            Map(m => m.TranslatedText).Name($"TraducedText({traducedLanguage})");
+            Map(m => m.TranslatedText).Name($"TranslatedText({traducedLanguage})");
             Map(m => m.Status).Name("Status");
         }
     }
