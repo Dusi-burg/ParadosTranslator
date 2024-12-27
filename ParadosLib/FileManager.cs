@@ -7,9 +7,6 @@ namespace ParadosLib
 {
     internal static class FileManager
     {
-        private const string AllKeysFile = "HOI_IV_AllTraducedKeys.yml";
-        private const string DifferentKeysFile = "HOI_IV_KeyDifferTraducedKeys.yml";
-        private const string MissingKeysFile = "HOI_IV_MissingTraducedKeys.yml";
         private const string SectionName = "SECTION FILE ";
         private const string Separator = " => ";
         private const string DbCsvFile = "HOI_IV_AllKeys_{0}_{1}.csv";
@@ -23,42 +20,6 @@ namespace ParadosLib
         internal static string ExtractSectionFromFileName(string fileName, string language)
         {
             return fileName.Replace($"_{string.Format(FileNameLanguageFormat, language)}", string.Empty);
-        }
-
-        internal static Dictionary<string, Dictionary<string, KeyDto>> ReadFromOldDbFile(DirectoryInfo workingPath, string originalLnguage)
-        {
-            FileInfo allKeyFile = new FileInfo(Path.Combine(workingPath.FullName, AllKeysFile));
-            if (!allKeyFile.Exists)
-                return null;
-
-            Dictionary<string, Dictionary<string, KeyDto>> allSectionKeys = new Dictionary<string, Dictionary<string, KeyDto>>();
-
-            Dictionary<string, KeyDto> currentSection = null;
-            using (StreamReader sr = new StreamReader(allKeyFile.FullName))
-            {
-                string line;
-                int lineNumber = 0;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    lineNumber++;
-                    if (string.IsNullOrWhiteSpace(line))
-                        continue;
-
-                    if (line.StartsWith(SectionName)) //creao sezione
-                    {
-                        currentSection = new Dictionary<string, KeyDto>();
-                        string sectioName = ExtractSectionFromFileName(line.Replace(SectionName, string.Empty), originalLnguage);
-                        allSectionKeys.Add(sectioName, currentSection);
-                        continue;
-                    }
-                   
-                    var keyName = line.Substring(0, line.IndexOf(':'));
-                    var traduzione = line.Substring(line.IndexOf(':')+2).Split(Separator);
-                    var info = new KeyDto(keyName, traduzione[0], traduzione[1]);
-                    currentSection.Add(info.Key, info);
-                }
-            }
-            return allSectionKeys;
         }
 
         internal static Dictionary<string, Dictionary<string, ReadDto>> ExtractAllKeysFromFiles(DirectoryInfo originalLanguageDir, string originalLanguage, out int numeroChiavi, out Dictionary<string, List<ReadDto>> duplicateSectionList)
@@ -146,8 +107,8 @@ namespace ParadosLib
             FileInfo input = new FileInfo(Path.Combine(workingPath.FullName, string.Format(DbCsvFile, languageOrigin, languageTraduced)));
             Dictionary<string, Dictionary<string, ReadDto>> allKeysFromDb = new Dictionary<string, Dictionary<string, ReadDto>>();
 
-            //CSV in this form Section(files);Key;Rank;OriginalText(language);TraducedText(language);Status
-            // Section = 0; Key = 1, Rank = 2, OriginalText(language) = 3, TraducedText(language) = 4, Status = 5
+            //CSV in this form Section(files);Key;Rank;OriginalText(language);TranslatedText(language);Status
+            // Section = 0; Key = 1, Rank = 2, OriginalText(language) = 3, TranslatedText(language) = 4, Status = 5
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 Delimiter = ";",
@@ -192,13 +153,13 @@ namespace ParadosLib
                         switch (statusKey)
                         {
                             case KeyStatusEnum.OK:
-                                readKey = ReadDto.Create(key, record.TraducedText.EnsureStartsEndsWithQuote(), rank);
+                                readKey = ReadDto.Create(key, record.TranslatedText.EnsureStartsEndsWithQuote(), rank);
                                 break;
                             case KeyStatusEnum.MISSING:
                                 readKey = ReadDto.Create(key, record.OriginalText.EnsureStartsEndsWithQuote(), rank);
                                 break;
                             case KeyStatusEnum.DIFFERS: //warning ??
-                                readKey = ReadDto.Create(key, record.TraducedText.EnsureStartsEndsWithQuote(), rank);
+                                readKey = ReadDto.Create(key, record.TranslatedText.EnsureStartsEndsWithQuote(), rank);
                                 break;
                             default:
                                 throw new Exception($"Db file statusKey line number {csv.CurrentIndex} is UNKNOWN");
@@ -213,10 +174,10 @@ namespace ParadosLib
         internal static FileInfo WriteDbFiles(DirectoryInfo workingPath, string languageOrigin, string languageTraduced, Dictionary<string, Dictionary<string, KeyDto>> fileAllKeys)
         {
             FileInfo output = new FileInfo(Path.Combine(workingPath.FullName, string.Format(DbCsvFile, languageOrigin, languageTraduced)));
-            //CSV in this form Section(files);Key;Rank;OriginalText(language);TraducedText(language);Status
+            //CSV in this form Section(files);Key;Rank;OriginalText(language);TranslatedText(language);Status
             using (StreamWriter writer = new StreamWriter(output.FullName, false, Encoding.UTF8))
             {
-                writer.WriteLine($"Section(files);Key;Rank;OriginalText({languageOrigin});TraducedText({languageTraduced});Status");
+                writer.WriteLine($"Section(files);Key;Rank;OriginalText({languageOrigin});TranslatedText({languageTraduced});Status");
                 foreach (var pair in fileAllKeys)
                 {
                     foreach (var kvp in pair.Value)

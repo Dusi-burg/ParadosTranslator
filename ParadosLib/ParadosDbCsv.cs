@@ -9,7 +9,7 @@ namespace ParadosLib
         public string Key { get; set; }
         public string Rank { get; set; }
         public string OriginalText { get; set; }
-        public string TraducedText { get; set; }
+        public string TranslatedText { get; set; }
         public string Status { get; set; }
     }
 
@@ -20,7 +20,7 @@ namespace ParadosLib
             Map(m => m.Section).Name("Section(files)");
             Map(m => m.Key).Name("Key");
             Map(m => m.OriginalText).Name($"OriginalText({originalLanguage})");
-            Map(m => m.TraducedText).Name($"TraducedText({traducedLanguage})");
+            Map(m => m.TranslatedText).Name($"TraducedText({traducedLanguage})");
             Map(m => m.Status).Name("Status");
         }
     }
