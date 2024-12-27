@@ -105,7 +105,6 @@
             tbPathOrigin.Name = "tbPathOrigin";
             tbPathOrigin.Size = new Size(604, 27);
             tbPathOrigin.TabIndex = 3;
-            tbPathOrigin.Text = "D:\\Utility\\HOI_IV\\Original-HOI_IV";
             // 
             // tbPathWorking
             // 
@@ -114,7 +113,6 @@
             tbPathWorking.Name = "tbPathWorking";
             tbPathWorking.Size = new Size(604, 27);
             tbPathWorking.TabIndex = 4;
-            tbPathWorking.Text = "D:\\Utility\\HOI_IV\\WorkingFolder";
             // 
             // folderBrowserDialogIta
             // 
@@ -142,7 +140,6 @@
             tbPathTranslated.Name = "tbPathTranslated";
             tbPathTranslated.Size = new Size(604, 27);
             tbPathTranslated.TabIndex = 16;
-            tbPathTranslated.Text = "D:\\Utility\\HOI_IV\\Traduzioni-HOI_IV";
             // 
             // btnSelectTranslated
             // 
