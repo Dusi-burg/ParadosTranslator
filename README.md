@@ -36,3 +36,6 @@ The single row in csv have a status:
 |OK|`Key is found and semantic [variable in square] are all ok`
 |MISSING|`Key is not found`
 |DIFFERS|`Key is found but semantic [variable in square] have one or more differencies`
+
+# Build and run
+Install .Net 8 SDK see https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-8.0.404-windows-x64-installer then open a prompt in the root folder and simple run "dotnet build" command. The output will be in ParadosTranslator\bin\Debug\net8.0-windows foler double click on ParadosTranslator.exe and run it.
